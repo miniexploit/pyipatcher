@@ -13,7 +13,7 @@ class patchfinder64:
         retassure(self.size % 4 == 0, 'arm64 file size not divisible by 4')
 
     def get_offset(self, x):
-        return 0
+        raise NotImplementedError()
 
     def memmem(self, needle, end=False):
         if end:
