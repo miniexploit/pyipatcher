@@ -1,6 +1,7 @@
 import ctypes
 import struct
 
+# TODO: Remove m1n1Exception dependency, use `logging` for logging, type-hinting, docstrings
 from m1n1Exception import *
 
 # INSN_CALL   0x94000000, 0xFC000000
@@ -124,6 +125,7 @@ class PatchFinder64:
         self._buf[where : where + bytes] = patch
 
 
+# TODO: Convert this to pytest
 def test():
     set_package_name('test')
     kernel = open('kcache.raw', 'rb').read()
