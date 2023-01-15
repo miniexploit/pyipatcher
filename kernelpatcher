@@ -1,0 +1,69 @@
+#!/Library/Frameworks/Python.framework/Versions/3.10/bin/python3
+
+from patchfinder64 import patchfinder64
+from m1n1Exception import *
+import sys
+
+set_package_name("kernelpatcher")
+
+def assure(cond):
+    retassure(cond, "assure failed")
+
+def print_help():
+    print("Usage: kernelpatcher [input] [output] [args]")
+    print("\t-a\t\tPatch AMFI")
+
+def get_amfi_out_of_my_way_patch(pf):    
+    xnu = pf.get_str(b"root:xnu-", 4, end=True)
+    kernel_vers = int(xnu)
+    print(f"Kernel-{kernel_vers} inputted")
+    amfi_str = b"entitlements too small"
+    string_len = 22
+    if kernel_vers >= 7938:
+        amfi_str = b"Internal Error: No cdhash found."
+        string_len = 32
+    ent_loc = pf.memmem(amfi_str)
+    retassure(ent_loc != 0, " Could not find amfi_str")
+    print(f"Found amfi_str loc at {hex(ent_loc)}")
+    ent_ref = pf.xref(0, pf.size, ent_loc)
+    retassure(ent_ref != 0, "Could not find amfi_str xref")
+    print(f"Found amfi_str ref at {hex(ent_ref)}")
+    next_bl = pf.step(ent_ref, 100, 0x94000000, 0xFC000000)
+    assure(next_bl != 0)
+    next_bl = pf.step(next_bl+0x4, 200, 0x94000000, 0xFC000000)
+    assure(next_bl != 0)
+    if kernel_vers > 3789:
+        next_bl = pf.step(next_bl+0x4, 200, 0x94000000, 0xFC000000)
+        assure(next_bl != 0)
+    function = pf.follow_call(next_bl)
+    retassure(function != 0, "Could not find function bl")
+    pf.apply_patch(function, b"\xe0\x03\x002")
+    pf.apply_patch(function+4, b"\xc0\x03_\xd6")
+
+
+def main():
+    if len(sys.argv) <= 3:
+        print_help()
+        sys.exit(0)
+    kernel = open(sys.argv[1], "rb").read()
+    if kernel[0:4] == b"\xca\xfe\xba\xbe":
+        print("Detected fat macho kernel")
+        kernel = kernel[28:]
+
+    pf = patchfinder64(kernel)
+    for arg in sys.argv:
+        if arg == "-a":
+            get_amfi_out_of_my_way_patch(pf)
+
+    print("Writing out patched file")
+    with open(sys.argv[2], "wb") as f:
+        f.write(pf._buf)
+
+    
+
+if __name__ == '__main__':
+    try:
+        main()
+    except m1n1Exception as e:
+        print(e)
+        True
