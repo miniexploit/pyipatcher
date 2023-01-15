@@ -9,6 +9,7 @@ Incomplete iOS bootchain patchers in Python
 ```
 Usage: kernelpatcher [input] [output] [args]
 	-a		Patch AMFI
+	-e		Patch root volume seal is broken (iOS 15 Only)
 ```
 ## Credits
 Thanks to [plx](https://github.com/justtryingthingsout) for helping me with many fixes
