@@ -1,7 +1,7 @@
-from m1n1Exception import *
-import struct
 import ctypes
-import sys
+import struct
+
+from m1n1Exception import *
 
 # INSN_CALL   0x94000000, 0xFC000000
 
@@ -15,7 +15,7 @@ class PatchFinder64:
         return len(self._buf)
 
     def get_offset(self, x):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def memmem(self, needle, end=False):
         if end:
@@ -127,7 +127,7 @@ class PatchFinder64:
 def test():
     set_package_name('test')
     kernel = open('kcache.raw', 'rb').read()
-    pf = patchfinder64(kernel)
+    pf = PatchFinder64(kernel)
     ret = pf.step(16223228, 100, 0x94000000, 0xFC000000)
 
     print(f'returned: {pf.step(ret, 100, 0x94000000, 0xFC000000)}')
