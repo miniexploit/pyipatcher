@@ -6,11 +6,13 @@ import sys
 # INSN_CALL   0x94000000, 0xFC000000
 
 
-class patchfinder64:
+class PatchFinder64:
     def __init__(self, buf):
         self._buf = bytearray(buf)
-        self.size = len(buf)
-        retassure(self.size % 4 == 0, 'arm64 file size not divisible by 4')
+        retassure(len(self) % 4 == 0, 'buffer size not divisible by 4')
+
+    def __len__(self) -> int:
+        return len(self._buf)
 
     def get_offset(self, x):
         raise NotImplementedError()
