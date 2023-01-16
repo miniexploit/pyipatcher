@@ -23,10 +23,8 @@ def print_help():
 
 def get_amfi_out_of_my_way_patch(pf):
     amfi_str = b'entitlements too small'
-    string_len = 22
     if kernel_vers >= 7938:
         amfi_str = b'Internal Error: No cdhash found.'
-        string_len = 32
     ent_loc = pf.memmem(amfi_str)
     retassure(ent_loc != 0, 'get_amfi_out_of_my_way_patch: Could not find amfi_str')
     print(f'get_amfi_out_of_my_way_patch: Found amfi_str loc at {hex(ent_loc)}')
