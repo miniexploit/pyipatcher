@@ -1,14 +1,11 @@
 [tool.poetry]
 name = "pyipatcher"
-version = "1.0.0"
+version = "1.0.1"
 description = "iOS ARM64 patchfinder & iOS ARM64 bootchain patcher"
 authors = ["mini_exploit <61931266+Mini-Exploit@users.noreply.github.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/Mini-Exploit/pyipatcher"
-
-[tool.poetry.scripts]
-kernelpatcher = "patchfinder64.kernelpatcher:main"
 
 [tool.poetry.dependencies]
 python = "^3.7"

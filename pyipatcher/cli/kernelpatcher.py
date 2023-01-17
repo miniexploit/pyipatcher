@@ -1,6 +1,4 @@
 import click
-#from pyipatcher.patchfinder.patchfinder64 import patchfinder64
-#from pyipatcher.patchfinder import kernelpatchfinder as kpf
 from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 import pyipatcher.patchfinder.kernelpatchfinder as kpf
 

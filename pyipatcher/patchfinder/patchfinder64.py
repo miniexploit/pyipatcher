@@ -1,9 +1,18 @@
-from m1n1Exception import *
 import struct
 import ctypes
 import sys
 
-#INSN_CALL   0x94000000, 0xFC000000
+def retassure(cond, errmsg):
+    if not cond:
+        raise Exception(errmsg)
+
+def assure(cond):
+    retassure(cond, "assure failed")
+
+def arm64_branch_instruction(_from, to):
+    _from = ctypes.c_ulonglong(_from).value
+    to = ctypes.c_ulonglong(to).value
+    return 0x18000000 - (_from - to) / 4 if _from > to else 0x14000000 + (to - _from) / 4
 
 class patchfinder64:
     def __init__(self, buf):
