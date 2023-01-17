@@ -114,8 +114,6 @@ def amfi_patch(pf64: PatchFinder64, xnu_ver: int, verbose: bool) -> None:
     help='Increase verbosity.',
 )
 def main(input_: BinaryIO, output: BinaryIO, patch_amfi: bool, verbose: bool) -> None:
-    '''A Python CLI tool for decrypting iOS/iPadOS bootchain firmware keys.'''
-
     if not verbose:
         sys.tracebacklimit = 0
 
