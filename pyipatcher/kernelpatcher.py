@@ -8,7 +8,7 @@ from typing import BinaryIO
 
 import click
 
-from patchfinder64 import patchfinder64, __version__
+from pyipatcher import patchfinder64, __version__
 
 
 def amfi_patch(pf64: patchfinder64, xnu_ver: int, verbose: bool) -> None:
@@ -82,7 +82,7 @@ def amfi_patch(pf64: patchfinder64, xnu_ver: int, verbose: bool) -> None:
 
 
 @click.command()
-@click.version_option(message=f'Criptam {__version__}')
+@click.version_option(message=f'PyiPatcher {__version__}')
 @click.option(
     '-i',
     '--input',
