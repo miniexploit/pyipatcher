@@ -273,18 +273,6 @@ plugins = ["setuptools"]
 requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
-name = "m1n1exception"
-version = "2.7"
-description = "Python library for conveniently handling errors"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "m1n1Exception-2.7-py3-none-any.whl", hash = "sha256:b49103e3ea3b17a016a0b00f6b997f54d7f1cfcb9544bc3b3c9a4a760894f1c1"},
-    {file = "m1n1Exception-2.7.tar.gz", hash = "sha256:f7bea413aca124767a3a3a1f239034385392b5d46cdc2d34021de1ac8bc8c0df"},
-]
-
-[[package]]
 name = "mypy-extensions"
 version = "0.4.3"
 description = "Experimental type system extensions for programs checked with the mypy typechecker."
@@ -529,4 +517,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "b7eab003006c2da5f481644c28bd71ad7c33774c038a18e7e1361a8bf430a075"
+content-hash = "90f50e0460856531d06beb092a8b9213c6fe63d48722fd7583f6e6d6c064c6c6"
