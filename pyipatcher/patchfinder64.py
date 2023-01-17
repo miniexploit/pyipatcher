@@ -7,6 +7,14 @@ import struct
 # INSN_CALL   0x94000000, 0xFC000000
 
 
+def arm64_branch_instruction(_from, to):
+    _from = ctypes.c_ulonglong(_from).value
+    to = ctypes.c_ulonglong(to).value
+    return (
+        0x18000000 - (_from - to) / 4 if _from > to else 0x14000000 + (to - _from) / 4
+    )
+
+
 class patchfinder64:
     def __init__(self, data: bytes):
         self._data = bytearray(data)
