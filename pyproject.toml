@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "pyipatcher"
+version = "1.0.0"
+description = "iOS ARM64 patchfinder & iOS ARM64 bootchain patcher"
+authors = ["mini_exploit <61931266+Mini-Exploit@users.noreply.github.com>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+repository = "https://github.com/Mini-Exploit/pyipatcher"
+
+[tool.poetry.scripts]
+kernelpatcher = "patchfinder64.kernelpatcher:main"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+click = "^8.1.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+isort = "^5.11.4"
+pytest = "^7.2.1"
+remotezip = "^0.12.0"
+
+[tool.black]
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+src_paths = ["patchfinder64"]
+
+[tool.pytest.ini_options]
+# TODO: Add proper tests
+# testpaths = ["tests"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/Mini-Exploit/pyipatcher/issues"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

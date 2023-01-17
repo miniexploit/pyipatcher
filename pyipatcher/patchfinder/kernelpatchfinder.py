@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
+from .patchfinder64 import patchfinder64
 
-from patchfinder64 import patchfinder64
-from m1n1Exception import *
-import sys
-
-set_package_name("kernelpatcher")
 kernel_vers = 0
+
+def retassure(cond, errmsg):
+    if not cond:
+        raise Exception(errmsg)
 
 def assure(cond):
     retassure(cond, "assure failed")
@@ -68,40 +67,3 @@ def get_update_rootfs_rw_patch(pf):
     print(f"get_update_rootfs_rw_patch: Patching tbnz at {hex(tbnz_ref2)}")
     pf.apply_patch(tbnz_ref2, b"\x1f \x03\xd5")
     return 0
-
-def main():
-    if len(sys.argv) <= 3:
-        print_help()
-        sys.exit(0)
-    kernel = open(sys.argv[1], "rb").read()
-    if kernel[0:4] == b"\xca\xfe\xba\xbe":
-        print("Detected fat macho kernel")
-        kernel = kernel[28:]
-
-    pf = patchfinder64(kernel)
-    xnu = pf.get_str(b"root:xnu-", 4, end=True)
-    global kernel_vers
-    kernel_vers = int(xnu)
-    print(f"Kernel-{kernel_vers} inputted")
-    for arg in sys.argv:
-        if arg == "-a":
-            print("Getting get_amfi_out_of_my_way_patch()")
-            get_amfi_out_of_my_way_patch(pf)
-        if arg == "-e":
-            print("Getting get_root_volume_seal_is_broken_patch()")
-            get_root_volume_seal_is_broken_patch(pf)
-        if arg == "-u":
-            print("Getting get_update_rootfs_rw_patch()")
-            get_update_rootfs_rw_patch(pf)
-
-    print("Writing out patched file")
-    with open(sys.argv[2], "wb") as f:
-        f.write(pf._buf)
-
-    
-
-if __name__ == '__main__':
-    try:
-        main()
-    except m1n1Exception as e:
-        print(e)
