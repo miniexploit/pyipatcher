@@ -7,7 +7,7 @@ import struct
 # INSN_CALL   0x94000000, 0xFC000000
 
 
-class PatchFinder64:
+class patchfinder64:
     def __init__(self, data: bytes):
         self._data = bytearray(data)
         # retassure(len(self) % 4 == 0, 'buffer size not divisible by 4')
@@ -145,7 +145,7 @@ class PatchFinder64:
 def test():
     # set_package_name('test')
     kernel = open('kcache.raw', 'rb').read()
-    pf = PatchFinder64(kernel)
+    pf = patchfinder64(kernel)
     ret = pf.step(16223228, 100, 0x94000000, 0xFC000000)
 
     # print(f'returned: {pf.step(ret, 100, 0x94000000, 0xFC000000)}')

@@ -8,10 +8,10 @@ from typing import BinaryIO
 
 import click
 
-from patchfinder64 import PatchFinder64, __version__
+from patchfinder64 import patchfinder64, __version__
 
 
-def amfi_patch(pf64: PatchFinder64, xnu_ver: int, verbose: bool) -> None:
+def amfi_patch(pf64: patchfinder64, xnu_ver: int, verbose: bool) -> None:
     if xnu_ver >= 7938:
         amfi_str = b'Internal Error: No cdhash found.'
     else:
@@ -78,7 +78,7 @@ def amfi_patch(pf64: PatchFinder64, xnu_ver: int, verbose: bool) -> None:
 
     if verbose:
         click.echo(f'[DEBUG] Patching AppleMobileFileIntegrity at {hex(function)}.')
-    pf64.apply_patch(function, b'\xe0\x03\x002\xc0\x03_\xd6')
+    pf64.apply_patch(function, b'\xe0\x03\x002\xc0\x03_\xd6', length=8)
 
 
 @click.command()
@@ -124,7 +124,7 @@ def main(input_: BinaryIO, output: BinaryIO, patch_amfi: bool, verbose: bool) ->
         click.echo('[NOTE] Detected fat macho kernel.')
         data = data[28:]
 
-    pf64 = PatchFinder64(data)
+    pf64 = patchfinder64(data)
     xnu_ver = int(pf64.get_str(b'root:xnu-', 4, end=True))
     if verbose:
         click.echo(f'[DEBUG] Kernel version: {xnu_ver}')
