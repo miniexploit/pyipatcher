@@ -1,8 +1,8 @@
 import ctypes
 import struct
 
-# TODO: Remove m1n1Exception dependency, use `logging` for logging, type-hinting, docstrings
-from m1n1Exception import *
+# TODO: Use `logging` for logging, type-hinting, docstrings
+# from m1n1Exception import *
 
 # INSN_CALL   0x94000000, 0xFC000000
 
@@ -10,10 +10,14 @@ from m1n1Exception import *
 class PatchFinder64:
     def __init__(self, data: bytes):
         self._data = bytearray(data)
-        retassure(len(self) % 4 == 0, 'buffer size not divisible by 4')
+        # retassure(len(self) % 4 == 0, 'buffer size not divisible by 4')
 
     def __len__(self) -> int:
         return len(self._data)
+
+    @property
+    def data(self) -> bytes:
+        return bytes(self._data)
 
     def get_offset(self, x):
         raise NotImplementedError
@@ -34,7 +38,7 @@ class PatchFinder64:
 
             start += 4
 
-        reterror('step() failed')
+        # reterror('step() failed')
 
     def step_back(self, start, length, what, mask):
         end = start - length
@@ -45,7 +49,7 @@ class PatchFinder64:
 
             start -= 4
 
-        reterror('step_back() failed')
+        # reterror('step_back() failed')
 
     def bof(self, start, where):
         while where >= start:
@@ -72,7 +76,7 @@ class PatchFinder64:
                             break
             where -= 4
 
-        reterror('bof() failed')
+        # reterror('bof() failed')
 
     def follow_call(self, call):
         w = ctypes.c_longlong(
@@ -130,7 +134,7 @@ class PatchFinder64:
             if value[reg] == what:
                 return i
 
-        reterror('xref() failed')
+        # reterror('xref() failed')
 
     def apply_patch(self, where, patch, bytes_=4):
         # print(f'Applying patch at {hex(where)}={patch}')
@@ -139,7 +143,7 @@ class PatchFinder64:
 
 # TODO: Convert this to pytest
 def test():
-    set_package_name('test')
+    # set_package_name('test')
     kernel = open('kcache.raw', 'rb').read()
     pf = PatchFinder64(kernel)
     ret = pf.step(16223228, 100, 0x94000000, 0xFC000000)

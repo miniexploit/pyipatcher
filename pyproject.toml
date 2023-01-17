@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pyipatcher"
+name = "patchfinder64"
 version = "1.0.0"
 description = "iOS ARM64 kernel patchfinder"
 authors = ["mini_exploit <61931266+Mini-Exploit@users.noreply.github.com>"]
