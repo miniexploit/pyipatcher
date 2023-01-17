@@ -14,7 +14,7 @@ def print_help():
     print("Usage: kernelpatcher [input] [output] [args]")
     print("\t-a\t\tPatch AMFI")
     print("\t-e\t\tPatch root volume seal is broken (iOS 15 Only)")
-    print("\t-u\t\tPatch could_not_authenticate_personalized_root_hash (iOS 15 Only)")
+    print("\t-u\t\tPatch update_rootfs_rw_patch (iOS 15 Only)")
 
 def get_amfi_out_of_my_way_patch(pf):    
     amfi_str = b"entitlements too small"
@@ -65,7 +65,7 @@ def get_update_rootfs_rw_patch(pf):
     assure(tbnz_ref != 0)
     tbnz_ref2 = pf.step_back(tbnz_ref - 4, 800, 0x36000000, 0x7E000000)
     assure(tbnz_ref != 0)
-    print(f"get_update_rootfs_rw_patch: Patching tbnz at {hex(tbnz_ref)}")
+    print(f"get_update_rootfs_rw_patch: Patching tbnz at {hex(tbnz_ref2)}")
     pf.apply_patch(tbnz_ref2, b"\x1f \x03\xd5")
     return 0
 
