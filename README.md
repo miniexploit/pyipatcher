@@ -1,15 +1,27 @@
 # pyipatcher
 Incomplete iOS bootchain patchers in Python
 ## Notes
-* Currently it's in a very incomplete stage with only kernel patcher
-* --It will be pushed to pip as a package later--
+* -- It will be pushed to pip as a package later --
+* You can now install it locally (see Installation)
 * patchfinder64 is ported from [xerub's patchfinder](https://github.com/xerub/patchfinder64)
-## Usage
-* Kernel patcher:
+* kernelpatcher is ported from [palera1n team's fork of Kernel64Patcher](https://github.com/palera1n/Kernel64Patcher)
+## Installation
 ```
-Usage: kernelpatcher [input] [output] [args]
-	-a		Patch AMFI
-	-e		Patch root volume seal is broken (iOS 15 Only)
+git clone https://github.com/Mini-Exploit/pyipatcher
+cd pyipatcher
+./install.sh
+```
+## Usage
+```
+$ python3 -m pyipatcher
+pyipatcher version: 1.0.0
+Usage: python -m pyipatcher [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  -h, --help  Show this message and exit.
+
+Commands:
+  kernelpatcher
 ```
 ## Credits
 Thanks to [plx](https://github.com/justtryingthingsout) for helping me with many fixes
