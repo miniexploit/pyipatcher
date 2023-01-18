@@ -203,7 +203,7 @@ def cli() -> None:
 )
 @click.option(
     '-u',
-    '--update-rootfs-rw',
+    '--rootfs-rw',
     'patch_update_rootfs_rw',
     is_flag=True,
     help='Patch rootfs r/w (iOS 15+ only).',
