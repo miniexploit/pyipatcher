@@ -9,7 +9,7 @@ from ..patchfinder64 import patchfinder64
 
 
 def patch_root_volume_seal(pf64: patchfinder64, verbose: bool) -> None:
-    rh_auth_str = b"\"root volume seal is broken %p\\n\""
+    rh_auth_str = b'"root volume seal is broken %p\\n"'
     rh_auth_str_loc = pf64.memmem(rh_auth_str)
     if rh_auth_str_loc == 0:
         click.secho(
@@ -58,7 +58,7 @@ def patch_root_volume_seal(pf64: patchfinder64, verbose: bool) -> None:
 
 
 def patch_rootfs_rw(pf64: patchfinder64, verbose: bool) -> None:
-    rtfs_rw_str = b"%s:%d: %s Updating mount to read/write mode is not allowed"
+    rtfs_rw_str = b'%s:%d: %s Updating mount to read/write mode is not allowed'
     rtfs_rw_str_loc = pf64.memmem(rtfs_rw_str)
     if rtfs_rw_str_loc == 0:
         click.secho(

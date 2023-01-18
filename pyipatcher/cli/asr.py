@@ -9,7 +9,7 @@ from ..patchfinder64 import arm64_branch_instruction, patchfinder64
 
 
 def patch_asr_sigchecks(pf64: patchfinder64, verbose: bool) -> None:
-    failed_str = b"Image failed signature verification"
+    failed_str = b'Image failed signature verification'
     failed_str_loc = pf64.memmem(failed_str)
     if failed_str_loc == 0:
         click.secho(
