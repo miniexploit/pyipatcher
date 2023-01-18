@@ -7,11 +7,11 @@ import struct
 # INSN_CALL   0x94000000, 0xFC000000
 
 
-def arm64_branch_instruction(_from, to):
-    _from = ctypes.c_ulonglong(_from).value
+def arm64_branch_instruction(from_, to):
+    from_ = ctypes.c_ulonglong(from_).value
     to = ctypes.c_ulonglong(to).value
     return (
-        0x18000000 - (_from - to) / 4 if _from > to else 0x14000000 + (to - _from) / 4
+        0x18000000 - (from_ - to) / 4 if from_ > to else 0x14000000 + (to - from_) / 4
     )
 
 
