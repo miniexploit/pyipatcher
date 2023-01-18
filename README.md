@@ -13,22 +13,15 @@ cd pyipatcher
 ```
 ## Usage
 ```
-$ python3 -m pyipatcher
-<<<<<<< HEAD
+$ pyipatcher
 pyipatcher version: 1.0.1
-=======
-pyipatcher version: 1.0.0
->>>>>>> 4badf384ca941815dc41014795bc3900146dd967
-Usage: python -m pyipatcher [OPTIONS] COMMAND [ARGS]...
+Usage: pyipatcher [OPTIONS] COMMAND [ARGS]...
 
 Options:
   -h, --help  Show this message and exit.
 
 Commands:
-<<<<<<< HEAD
   asrpatcher
-=======
->>>>>>> 4badf384ca941815dc41014795bc3900146dd967
   kernelpatcher
 ```
 ## Future plan
