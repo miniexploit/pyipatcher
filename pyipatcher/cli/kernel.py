@@ -250,7 +250,7 @@ def kernel(
             )
             return
 
-        patch_root_volume_seal(pf64)
+        patch_root_volume_seal(pf64, verbose)
 
     if patch_update_rootfs_rw:
         if xnu_ver < 7938:  # 15.0b1
@@ -260,7 +260,7 @@ def kernel(
             )
             return
 
-        patch_rootfs_rw(pf64)
+        patch_rootfs_rw(pf64, verbose)
 
     click.echo(f'Writing patched kernel to {output.name}...')
     output.write(pf64.data)
