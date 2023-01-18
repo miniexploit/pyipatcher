@@ -85,7 +85,7 @@ def patch_asr_sigchecks(pf64: patchfinder64, verbose: bool) -> None:
         click.echo(f"[DEBUG] Created branch instruction at {hex(our_branch)}.")
 
     click.echo('Patching failed signature check...')
-    pf64.apply_patch(passed_xref, our_branch.to_bytes(4, byteorder='little'))
+    pf64.apply_patch(failed_xref, our_branch.to_bytes(4, byteorder='little'))
 
 
 @click.group()
