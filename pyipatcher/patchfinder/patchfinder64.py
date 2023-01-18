@@ -117,7 +117,7 @@ class patchfinder64:
         reterror("xref() failed")
 
     def apply_patch(self, where, patch, bytes=4):
-        print(f"Applying patch at {hex(where)}={patch}")
+        print(f"Applying patch at {hex(where)}")
         self._buf[where:where+bytes] = patch
 
 

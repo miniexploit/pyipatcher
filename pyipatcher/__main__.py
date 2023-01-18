@@ -1,6 +1,6 @@
 import click
+from .cli.ramdiskpatcher import ramdiskpatcher
 from .cli.kernelpatcher import kernelpatcher
-from .cli.asrpatcher import asrpatcher
 import logging, coloredlogs
 from .logger import get_my_logger
 
@@ -8,15 +8,7 @@ from .logger import get_my_logger
 def cli():
     pass
    
+cli.add_command(ramdiskpatcher)
 cli.add_command(kernelpatcher)
-cli.add_command(asrpatcher)
 
 cli.context_settings = dict(help_option_names=['-h', '--help'])
-
-logger = get_my_logger('main')
-
-def main():
-    try:
-        cli()
-    except Exception as e:
-        logger.error(f'pyipatcher failed with reason: {e}')

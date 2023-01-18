@@ -14,15 +14,15 @@ cd pyipatcher
 ## Usage
 ```
 $ pyipatcher
-pyipatcher version: 1.0.1
+pyipatcher version: 1.0.2
 Usage: pyipatcher [OPTIONS] COMMAND [ARGS]...
 
 Options:
   -h, --help  Show this message and exit.
 
 Commands:
-  asrpatcher
   kernelpatcher
+  ramdiskpatcher
 ```
 ## Future plan
 * Complete kernel patcher
