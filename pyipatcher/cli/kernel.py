@@ -25,7 +25,7 @@ def patch_root_volume_seal(pf64: patchfinder64, verbose: bool) -> None:
             f"[DEBUG] Found '{rh_auth_str.decode()}' string at {hex(rh_auth_str_loc)}."
         )
 
-    rh_auth_xref = pf64.xref(0, pf64.size, rh_auth_str_loc)
+    rh_auth_xref = pf64.xref(0, len(pf64), rh_auth_str_loc)
     if rh_auth_xref == 0:
         click.secho(
             f"[ERROR] Could not find '{rh_auth_str.decode()}' string reference. Exiting."
@@ -74,7 +74,7 @@ def patch_rootfs_rw(pf64: patchfinder64, verbose: bool) -> None:
             f"[DEBUG] Found '{rtfs_rw_str.decode()}' string at {hex(rtfs_rw_str_loc)}."
         )
 
-    rtfs_rw_xref = pf64.xref(0, pf64.size, rtfs_rw_str_loc)
+    rtfs_rw_xref = pf64.xref(0, len(pf64), rtfs_rw_str_loc)
     if rtfs_rw_xref == 0:
         click.secho(
             f"[ERROR] Could not find '{rtfs_rw_str.decode()}' string reference. Exiting."
