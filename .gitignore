@@ -1,3 +1,7 @@
 pyipatcher/__pycache__
 pyipatcher/cli/__pycache__
 pyipatcher/patchfinder/__pycache__
+.DS_Store
+pyipatcher/.DS_Store
+pyipatcher/cli/.DS_Store
+pyipatcher/patchfinder/.DS_Store
