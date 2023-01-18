@@ -199,14 +199,14 @@ def cli() -> None:
     '--rootvol-seal',
     'patch_rootvol_seal',
     is_flag=True,
-    help='Patch root volume seal (iOS 15 Only)',
+    help='Patch root volume seal (iOS 15+ only).',
 )
 @click.option(
     '-u',
     '--update-rootfs-rw',
     'patch_update_rootfs_rw',
     is_flag=True,
-    help='Patch update_rootfs_rw (iOS 15 Only)',
+    help='Patch rootfs r/w (iOS 15+ only).',
 )
 @click.option(
     '-v',
@@ -245,7 +245,7 @@ def kernel(
     if patch_rootvol_seal:
         if xnu_ver < 7938:  # 15.0b1
             click.secho(
-                '[ERROR] root volume seal patch is only available for iOS 15.',
+                '[ERROR] root volume seal patch is only available for iOS 15+.',
                 fg='red',
             )
             return
@@ -255,7 +255,7 @@ def kernel(
     if patch_update_rootfs_rw:
         if xnu_ver < 7938:  # 15.0b1
             click.secho(
-                '[ERROR] update_rootfs_rw patch is only available for iOS 15.',
+                '[ERROR] rootfs r/w patch is only available for iOS 15+.',
                 fg='red',
             )
             return
