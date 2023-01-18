@@ -10,11 +10,11 @@ def assure(cond):
 
 def get_asr_patch(pf):
     failed = pf.memmem(b"Image failed signature verification")
-    retassure(failed != -1, "Could not find failed message")
-    print(f"\"Image failed signature verification\" at {hex(failed)}")
+    retassure(failed != -1, "get_asr_patch: Could not find \"Image failed signature verification\"")
+    print(f"get_asr_patch: \"Image failed signature verification\" at {hex(failed)}")
     passed = pf.memmem(b"Image passed signature verification")
-    retassure(passed != -1, "Could not find passed message")
-    print(f"\"Image failed signature verification\" at {hex(passed)}")
+    retassure(passed != -1, "get_asr_patch: Could not find \"Image passed signature verification\"")
+    print(f"get_asr_patch: \"Image failed signature verification\" at {hex(passed)}")
     ref_failed = pf.xref(0, pf.size, failed)
     ref_passed = pf.xref(0, pf.size, passed)
     assure(ref_failed)

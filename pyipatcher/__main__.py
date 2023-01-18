@@ -11,4 +11,7 @@ cli.add_command(asrpatcher)
 
 cli.context_settings = dict(help_option_names=['-h', '--help'])
 
-cli()
+try:
+    cli()
+except Exception as e:
+    click.secho(f'[ERROR] pyipatcher failed with reason: {e}', fg='red')
