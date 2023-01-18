@@ -34,7 +34,7 @@ def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw):
     logger = get_my_logger('kernelpatcher')
     kernel = input.read()
     if kernel[:4] == b'\xca\xfe\xba\xbe':
-        click.echo('Detected fat macho kernel')
+        logger.info('Detected fat macho kernel')
         kernel = kernel[28:]
     pf = patchfinder64(kernel)
     xnu = pf.get_str(b"root:xnu-", 4, end=True)
