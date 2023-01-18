@@ -12,7 +12,7 @@ python = "^3.7"
 click = "^8.1.3"
 
 [tool.poetry.scripts]
-pyipatcher = "pyipatcher.__main__:cli"
+pyipatcher = "pyipatcher.__main__:main"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"
