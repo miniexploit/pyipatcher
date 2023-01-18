@@ -5,8 +5,10 @@ import click
 
 from ..patchfinder64 import arm64_branch_instruction, patchfinder64
 
+# TODO: Docstrings
 
-def patch_asr_sigchecks(pf64: patchfinder64, verbose: bool):
+
+def patch_asr_sigchecks(pf64: patchfinder64, verbose: bool) -> None:
     failed_str = b"Image failed signature verification"
     failed_str_loc = pf64.memmem(failed_str)
     if failed_str_loc == 0:
@@ -87,7 +89,7 @@ def patch_asr_sigchecks(pf64: patchfinder64, verbose: bool):
 
 
 @click.group()
-def cli():
+def cli() -> None:
     pass
 
 
