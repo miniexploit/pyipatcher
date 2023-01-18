@@ -1,5 +1,6 @@
 from .patchfinder64 import patchfinder64, retassure, assure
 import struct
+from pyipatcher.logger import get_my_logger
 
 class ibootpatchfinder:
     def __init__(self, pf):
@@ -20,12 +21,13 @@ class ibootpatchfinder:
     def iboot_ref(self, pat):   self.pf.xref(0, self.pf.size, pat)
         
     def get_debug_enabled_patch(self):
+        logger = get_my_logger('get_debug_enabled_patch')
         debug_loc = self.pf.memmem("debug-enabled")
         assure(debug_loc != -1)
-        print(f'get_debug_enabled_patch: Found \"debug-enabled\" str loc at {hex(debug_loc)}')
+        print(f'Found \"debug-enabled\" str loc at {hex(debug_loc)}')
         debug_enabled_ref = self.pf.xref(0, self.pf.size, debug_loc)
         assure(debug_enabled_ref != 0)
-        print(f'get_debug_enabled_patch: Found \"debug-enabled\" str ref at {hex(debug_enabled_ref)}')
+        print(f'Found \"debug-enabled\" str ref at {hex(debug_enabled_ref)}')
         pf.apply_patch(debug_enabled_ref, b'\x20\x00\x80\xD2') 
         
         
