@@ -7,6 +7,7 @@ def get_asr_patch(pf):
     failed = pf.memmem(b"Image failed signature verification")
     if failed == -1: 
         logger.error('Could not find \"Image failed signature verification\"')
+        return -1
     logger.debug(f"\"Image failed signature verification\" at {hex(failed)}")
     passed = pf.memmem(b"Image passed signature verification")
     if passed == -1: 
