@@ -72,9 +72,8 @@ class patchfinder64:
 
     def xref(self, what):
         value = [0] * 32
-        end &= ~3
-        y = 0
-        for i in range(start & ~3, end, 4): 
+        end = self.size & ~3
+        for i in range(0, end, 4): 
 
             op = struct.unpack("<I", self._buf[i:i+4])[0]
             reg = op & 0x1F
@@ -98,7 +97,6 @@ class patchfinder64:
                     continue
                 value[reg] = value[rn] + imm
             elif (op & 0x9F000000) == 0x10000000:
-                y += 1
                 adr = ctypes.c_int(((op & 0x60000000) >> 18) | ((op & 0xFFFFE0) << 8)).value
                 value[reg] = ctypes.c_ulonglong((adr >> 11) + i).value
             elif (op & 0xFF000000) == 0x58000000:

@@ -3,8 +3,6 @@ from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 import pyipatcher.patchfinder.kernelpatchfinder as kpf
 from pyipatcher.logger import get_my_logger
 
-kernel_vers = 0
-
 @click.command()
 @click.argument('input', type=click.File('rb'))
 @click.argument('output', type=click.File('wb'))
@@ -46,8 +44,8 @@ def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu
         kernel = kernel[28:]
     pf = patchfinder64(kernel)
     xnu = pf.get_str(b"root:xnu-", 4, end=True)
-    global kernel_vers
     kernel_vers = int(xnu)
+    kpf.kernel_vers = kernel_vers
     logger.info(f'Kernel-{kernel_vers} inputted')
     if patch_amfi:
         logger.info('Getting get_amfi_out_of_my_way_patch()')

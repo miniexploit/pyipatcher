@@ -8,6 +8,7 @@ def get_amfi_out_of_my_way_patch(pf):
     amfi_str = b"entitlements too small"
     if kernel_vers >= 7938:
         amfi_str = b"Internal Error: No cdhash found."
+    logger.debug(f'amfi_str={amfi_str.decode()}')
     ent_loc = pf.memmem(amfi_str)
     if ent_loc == -1:
         logger.error('Could not find amfi_str')
