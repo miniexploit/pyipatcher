@@ -24,7 +24,7 @@ def get_skip_sealing_patch(pf):
     if skip_sealing != -1:
         logger.error('Could not find skip_sealing str')
         return -1
-    skip_sealing_ref = pf.xref(0, pf.size, skip_sealing)
+    skip_sealing_ref = pf.xref(skip_sealing)
     if skip_sealing_ref != -1:
         logger.error('Could not find skip_sealing ref')
         return -1

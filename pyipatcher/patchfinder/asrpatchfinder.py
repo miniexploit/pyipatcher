@@ -8,14 +8,14 @@ def get_asr_patch(pf):
     if failed == -1: 
         logger.error('Could not find \"Image failed signature verification\"')
         return -1
-    logger.debug(f"\"Image failed signature verification\" at {hex(failed)}")
-    passed = pf.memmem(b"Image passed signature verification")
+    logger.debug(f'\"Image failed signature verification\" at {hex(failed)}')
+    passed = pf.memmem(b"Image passed signature verification')
     if passed == -1: 
         logger.error('Could not find \"Image passed signature verification\"')
         return -1
     logger.debug(f"\"Image failed signature verification\" at {hex(passed)}")
-    ref_failed = pf.xref(0, pf.size, failed)
-    ref_passed = pf.xref(0, pf.size, passed)
+    ref_failed = pf.xref(failed)
+    ref_passed = pf.xref(passed)
     if ref_failed == 0:
         logger.error('Could not find \"Image failed signature verification\" ref')
         return -1

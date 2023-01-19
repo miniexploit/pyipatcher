@@ -2,13 +2,6 @@ import struct
 import ctypes
 import sys
 
-def retassure(cond, errmsg):
-    if not cond:
-        raise Exception(errmsg)
-
-def assure(cond):
-    retassure(cond, "assure failed")
-
 def arm64_branch_instruction(_from, to):
     _from = ctypes.c_ulonglong(_from).value
     to = ctypes.c_ulonglong(to).value
@@ -18,10 +11,8 @@ class patchfinder64:
     def __init__(self, buf):
         self._buf = bytearray(buf)
         self.size = len(buf)
-        retassure(self.size % 4 == 0, "arm64 file size not divisible by 4")
-
-    def get_offset(self, x):
-        return 0
+        if self.size % 4 != 0:
+            raise Exception('arm64 file size not divisible by 4')
 
     def memmem(self, needle, end=False):
         if end:
@@ -40,7 +31,7 @@ class patchfinder64:
             if (x & mask) == what:
                 return start
             start += 4
-        reterror("step() failed")
+        return 0
      
     def step_back(self, start, length, what, mask):
         end = start - length
@@ -49,7 +40,7 @@ class patchfinder64:
             if (x & mask) == what:
                 return start
             start -= 4
-        reterror("step_back() failed")
+        return 0
 
     def bof(self, start, where):
         while where >= start:
@@ -71,7 +62,7 @@ class patchfinder64:
                             where += 4;
                             break
             where -= 4
-        reterror("bof() failed")
+        return 0
 
     def follow_call(self, call):
         w = ctypes.c_longlong(struct.unpack("<I", self._buf[call:call+4])[0] & 0x3FFFFFF).value
@@ -79,7 +70,7 @@ class patchfinder64:
         w = ctypes.c_longlong(w >> (64-26-2)).value
         return call+w
 
-    def xref(self, start, end, what):
+    def xref(self, what):
         value = [0] * 32
         end &= ~3
         y = 0
@@ -114,7 +105,7 @@ class patchfinder64:
                 value[reg] = adr + i
             if value[reg] == what:
                 return i
-        reterror("xref() failed")
+        return 0
 
     def apply_patch(self, where, patch, bytes=4):
         print(f"Applying patch at {hex(where)}")

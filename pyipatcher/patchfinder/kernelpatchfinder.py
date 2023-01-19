@@ -13,7 +13,7 @@ def get_amfi_out_of_my_way_patch(pf):
         logger.error('Could not find amfi_str')
         return -1
     logger.debug(f'Found amfi_str loc at {hex(ent_loc)}')
-    ent_ref = pf.xref(0, pf.size, ent_loc)
+    ent_ref = pf.xref(ent_loc)
     if ent_ref == 0:
         logger.error('Could not find amfi_str xref')
         return -1
@@ -48,7 +48,7 @@ def get_root_volume_seal_is_broken_patch(pf):
         logger.error('Could not find roothash_authenticated_string')
         return -1
     logger.debug(f'Found roothash_authenticated_string loc at {hex(roothash_authenticated_loc)}')
-    roothash_authenticated_ref = pf.xref(0, pf.size, roothash_authenticated_loc)
+    roothash_authenticated_ref = pf.xref(roothash_authenticated_loc)
     if roothash_authenticated_ref == 0: 
         logger.error('Could not find roothash_authenticated_string xref')
         return -1
@@ -69,7 +69,7 @@ def get_update_rootfs_rw_patch(pf):
         logger.error('Could not find update_rootfs_rw_string')
         return -1
     logger.debug(f'Found update_rootfs_rw_string loc at {hex(update_rootfs_rw_loc)}')
-    update_rootfs_rw_ref = pf.xref(0, pf.size, update_rootfs_rw_loc)
+    update_rootfs_rw_ref = pf.xref(update_rootfs_rw_loc)
     logger.debug(f'Found update_rootfs_rw_string ref at {hex(update_rootfs_rw_ref)}')
     tbnz_ref = pf.step_back(update_rootfs_rw_ref, 800, 0x36000000, 0x7E000000)
     if tbnz_ref == 0:
@@ -90,7 +90,7 @@ def get_AFU_img4_sigcheck_patch(pf):
         logger.error('Could not find \"%s::%s() Performing img4 validation outside of workloop\" str')
         return -1
     logger.debug(f'"\%s::%s() Performing img4 validation outside of workloop\" str loc at {hex(ent_loc)}')
-    ent_ref = pf.xref(0, pf.size, ent_loc)
+    ent_ref = pf.xref(ent_loc)
     if ent_ref == 0:
         logger.error('Could not find \"%s::%s() Performing img4 validation outside of workloop\" str ref')
         return -1

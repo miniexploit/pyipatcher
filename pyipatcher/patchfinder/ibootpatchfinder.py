@@ -4,6 +4,7 @@ from pyipatcher.logger import get_my_logger
 
 class ibootpatchfinder:
     def __init__(self, pf):
+        raise NotImplementedError()
         self.pf = pf
         self.vers = self.get_iboot_major_ver()
         print(f'iBoot-{self.vers} inputted')
