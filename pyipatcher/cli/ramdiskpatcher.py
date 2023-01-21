@@ -21,6 +21,14 @@ from pyipatcher.logger import get_my_logger
     is_flag=True,
     help='Patch input file as a restored_external (iOS 14 only) (Patch skip sealing system volume)'
 )
+@click.option(
+    '-v',
+    '--verbose',
+    'verbose',
+    is_flag=True,
+    help='Show more debug information'
+)
+
 def ramdiskpatcher(input, output, is_asr, is_rext, verbose):
     logger = get_my_logger('asrpatcher', verbose)
     asr.verbose = verbose
