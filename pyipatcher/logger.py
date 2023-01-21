@@ -22,11 +22,14 @@ class MyFormatter(logging.Formatter): # https://stackoverflow.com/questions/3840
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-def get_my_logger(name):
+def get_my_logger(name, verbose):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    if verbose:
+        ch.setLevel(logging.DEBUG)
+    else:
+        ch.setLevel(logging.INFO)
     ch.setFormatter(MyFormatter())
     logger.addHandler(ch)
     return logger

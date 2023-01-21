@@ -2,9 +2,10 @@ from .patchfinder64 import patchfinder64
 from pyipatcher.logger import get_my_logger
 
 kernel_vers = 0
+verbose = 0
 
 def get_amfi_out_of_my_way_patch(pf):    
-    logger = get_my_logger('get_amfi_out_of_my_way_patch')
+    logger = get_my_logger('get_amfi_out_of_my_way_patch', verbose)
     amfi_str = b"entitlements too small"
     if kernel_vers >= 7938:
         amfi_str = b"Internal Error: No cdhash found."
@@ -37,12 +38,11 @@ def get_amfi_out_of_my_way_patch(pf):
         logger.error("Could not find function bl")
         return -1
     logger.debug(f'Patching AMFI at {hex(function)}')
-    pf.apply_patch(function, b"\xe0\x03\x002")
-    pf.apply_patch(function+4, b"\xc0\x03_\xd6")
+    pf.apply_patch(function, b'\xe0\x03\x002\xc0\x03_\xd6')
     return 0
 
 def get_root_volume_seal_is_broken_patch(pf):
-    logger = get_my_logger('get_root_volume_seal_is_broken_patch')
+    logger = get_my_logger('get_root_volume_seal_is_broken_patch', verbose)
     roothash_authenticated_string = b"\"root volume seal is broken %p\\n\""
     roothash_authenticated_loc = pf.memmem(roothash_authenticated_string)
     if roothash_authenticated_loc == -1:
@@ -63,7 +63,7 @@ def get_root_volume_seal_is_broken_patch(pf):
     return 0
 
 def get_update_rootfs_rw_patch(pf):
-    logger = get_my_logger('get_update_rootfs_rw_patch')
+    logger = get_my_logger('get_update_rootfs_rw_patch', verbose)
     update_rootfs_rw_string = b"%s:%d: %s Updating mount to read/write mode is not allowed"
     update_rootfs_rw_loc = pf.memmem(update_rootfs_rw_string)
     if update_rootfs_rw_loc == -1: 
@@ -85,7 +85,7 @@ def get_update_rootfs_rw_patch(pf):
     return 0
 
 def get_AFU_img4_sigcheck_patch(pf):
-    logger = get_my_logger('get_AFU_img4_sigcheck_patch')
+    logger = get_my_logger('get_AFU_img4_sigcheck_patch', verbose)
     ent_loc = pf.memmem(b'%s::%s() Performing img4 validation outside of workloop')
     if ent_loc == -1:
         logger.error('Could not find \"%s::%s() Performing img4 validation outside of workloop\" str')
@@ -98,7 +98,4 @@ def get_AFU_img4_sigcheck_patch(pf):
     logger.debug(f'\"%s::%s() Performing img4 validation outside of workloop\" str ref at {hex(ent_ref)}')
     logger.debug(f'Patching str ref')
     pf.apply_patch(ent_ref + 12, b'\x00\x00\x80\xd2')
-    return 0
-    
-    pf.apply_patch(tbnz_ref2, b"\x1f \x03\xd5")
     return 0

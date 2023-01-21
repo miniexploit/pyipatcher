@@ -2,6 +2,8 @@ from pyipatcher.patchfinder.patchfinder64 import patchfinder64, arm64_branch_ins
 from pyipatcher.logger import get_my_logger
 import struct
 
+verbose = 0
+
 def cbz_ref_back(buf, start, length):
     cbz_mask = 0x7E000000
     instr = 0
@@ -19,7 +21,7 @@ def cbz_ref_back(buf, start, length):
     return 0
 
 def get_skip_sealing_patch(pf):
-    logger = get_my_logger('get_skip_sealing_patch')
+    logger = get_my_logger('get_skip_sealing_patch', verbose)
     skip_sealing = pf.memmem(b'Skipping sealing system volume')
     if skip_sealing != -1:
         logger.error('Could not find skip_sealing str')

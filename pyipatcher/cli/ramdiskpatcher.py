@@ -1,6 +1,6 @@
 import click
-from pyipatcher.patchfinder.asrpatchfinder import get_asr_patch
-from pyipatcher.patchfinder.rextpatchfinder import get_skip_sealing_patch
+import pyipatcher.patchfinder.asrpatchfinder as asr
+import pyipatcher.patchfinder.rextpatchfinder as rext
 from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 from pyipatcher.logger import get_my_logger
 
@@ -21,17 +21,19 @@ from pyipatcher.logger import get_my_logger
     is_flag=True,
     help='Patch input file as a restored_external (iOS 14 only) (Patch skip sealing system volume)'
 )
-def ramdiskpatcher(input, output, is_asr, is_rext):
-    logger = get_my_logger('asrpatcher')
+def ramdiskpatcher(input, output, is_asr, is_rext, verbose):
+    logger = get_my_logger('asrpatcher', verbose)
+    asr.verbose = verbose
+    rext.verbose = verbose
     data = input.read()
     pf = patchfinder64(data)
     if is_asr:
         logger.info('Getting get_asr_patch()')
-        if get_asr_patch(pf) == -1:
+        if asr.get_asr_patch(pf) == -1:
             logger.warning('Failed getting get_asr_patch()')
     elif is_rext:
         logger.info('Getting get_skip_sealing_patch()')
-        if get_skip_sealing_patch(pf) == -1:
+        if rext.get_skip_sealing_patch(pf) == -1:
             logger.warning('Failed getting get_skip_sealing_patch()')
     logger.info(f'Writing out patched file to {output.name}')
     output.write(pf._buf)

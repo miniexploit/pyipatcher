@@ -2,8 +2,10 @@ from .patchfinder64 import patchfinder64, arm64_branch_instruction
 import ctypes
 from pyipatcher.logger import get_my_logger
 
+verbose = 0
+
 def get_asr_patch(pf):
-    logger = get_my_logger('get_asr_patch')
+    logger = get_my_logger('get_asr_patch', verbose)
     failed = pf.memmem(b"Image failed signature verification")
     if failed == -1: 
         logger.error('Could not find \"Image failed signature verification\"')

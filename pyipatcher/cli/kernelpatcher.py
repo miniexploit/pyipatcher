@@ -36,8 +36,17 @@ from pyipatcher.logger import get_my_logger
     help='Patch AppleFirmwareUpdate img4 signature check'
 )
 
-def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu_img4_sigpatch):
-    logger = get_my_logger('kernelpatcher')
+@click.option(
+    '-v',
+    '--verbose',
+    'verbose',
+    is_flag=True,
+    help='Show more debug information'
+)
+
+def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu_img4_sigpatch, verbose):
+    logger = get_my_logger('kernelpatcher', verbose)
+    kpf.verbose = verbose
     kernel = input.read()
     if kernel[:4] == b'\xca\xfe\xba\xbe':
         logger.info('Detected fat macho kernel')
