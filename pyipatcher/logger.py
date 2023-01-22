@@ -1,4 +1,5 @@
 import logging
+import inspect
 
 class MyFormatter(logging.Formatter): # https://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
     grey = "\x1b[38;20m"
@@ -22,8 +23,8 @@ class MyFormatter(logging.Formatter): # https://stackoverflow.com/questions/3840
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-def get_my_logger(name, verbose):
-    logger = logging.getLogger(name)
+def get_my_logger(verbose):
+    logger = logging.getLogger(inspect.stack()[1][3])
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     if verbose:

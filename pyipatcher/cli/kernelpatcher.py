@@ -45,7 +45,7 @@ from pyipatcher.logger import get_my_logger
 )
 
 def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu_img4_sigpatch, verbose):
-    logger = get_my_logger('kernelpatcher', verbose)
+    logger = get_my_logger(verbose)
     kpf.verbose = verbose
     kernel = input.read()
     if kernel[:4] == b'\xca\xfe\xba\xbe':
@@ -57,9 +57,9 @@ def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu
     kpf.kernel_vers = kernel_vers
     logger.info(f'Kernel-{kernel_vers} inputted')
     if patch_amfi:
-        logger.info('Getting get_amfi_out_of_my_way_patch()')
-        if kpf.get_amfi_out_of_my_way_patch(pf) == -1:
-            logger.warning('Failed getting get_amfi_out_of_my_way_patch()')
+        logger.info('Getting get_amfi_patch()')
+        if kpf.get_amfi_patch(pf) == -1:
+            logger.warning('Failed getting get_amfi_patch()')
             return -1
     if rootvol_seal:
         logger.info('Getting get_root_volume_seal_is_broken_patch()')

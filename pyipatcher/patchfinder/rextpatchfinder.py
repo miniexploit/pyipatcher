@@ -21,7 +21,7 @@ def cbz_ref_back(buf, start, length):
     return 0
 
 def get_skip_sealing_patch(pf):
-    logger = get_my_logger('get_skip_sealing_patch', verbose)
+    logger = get_my_logger(verbose)
     skip_sealing = pf.memmem(b'Skipping sealing system volume')
     if skip_sealing != -1:
         logger.error('Could not find skip_sealing str')

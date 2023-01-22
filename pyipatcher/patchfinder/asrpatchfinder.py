@@ -4,8 +4,8 @@ from pyipatcher.logger import get_my_logger
 
 verbose = 0
 
-def get_asr_patch(pf):
-    logger = get_my_logger('get_asr_patch', verbose)
+def get_asr_sigcheck_patch(pf):
+    logger = get_my_logger(verbose)
     failed = pf.memmem(b"Image failed signature verification")
     if failed == -1: 
         logger.error('Could not find \"Image failed signature verification\"')

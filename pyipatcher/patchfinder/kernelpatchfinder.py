@@ -4,8 +4,8 @@ from pyipatcher.logger import get_my_logger
 kernel_vers = 0
 verbose = 0
 
-def get_amfi_out_of_my_way_patch(pf):    
-    logger = get_my_logger('get_amfi_out_of_my_way_patch', verbose)
+def get_amfi_patch(pf):    
+    logger = get_my_logger(verbose)
     amfi_str = b"entitlements too small"
     if kernel_vers >= 7938:
         amfi_str = b"Internal Error: No cdhash found."
@@ -42,7 +42,7 @@ def get_amfi_out_of_my_way_patch(pf):
     return 0
 
 def get_root_volume_seal_is_broken_patch(pf):
-    logger = get_my_logger('get_root_volume_seal_is_broken_patch', verbose)
+    logger = get_my_logger(verbose)
     roothash_authenticated_string = b"\"root volume seal is broken %p\\n\""
     roothash_authenticated_loc = pf.memmem(roothash_authenticated_string)
     if roothash_authenticated_loc == -1:
@@ -63,7 +63,7 @@ def get_root_volume_seal_is_broken_patch(pf):
     return 0
 
 def get_update_rootfs_rw_patch(pf):
-    logger = get_my_logger('get_update_rootfs_rw_patch', verbose)
+    logger = get_my_logger(verbose)
     update_rootfs_rw_string = b"%s:%d: %s Updating mount to read/write mode is not allowed"
     update_rootfs_rw_loc = pf.memmem(update_rootfs_rw_string)
     if update_rootfs_rw_loc == -1: 
@@ -85,7 +85,7 @@ def get_update_rootfs_rw_patch(pf):
     return 0
 
 def get_AFU_img4_sigcheck_patch(pf):
-    logger = get_my_logger('get_AFU_img4_sigcheck_patch', verbose)
+    logger = get_my_logger(verbose)
     ent_loc = pf.memmem(b'%s::%s() Performing img4 validation outside of workloop')
     if ent_loc == -1:
         logger.error('Could not find \"%s::%s() Performing img4 validation outside of workloop\" str')

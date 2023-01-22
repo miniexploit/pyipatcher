@@ -30,15 +30,15 @@ from pyipatcher.logger import get_my_logger
 )
 
 def ramdiskpatcher(input, output, is_asr, is_rext, verbose):
-    logger = get_my_logger('asrpatcher', verbose)
+    logger = get_my_logger(verbose)
     asr.verbose = verbose
     rext.verbose = verbose
     data = input.read()
     pf = patchfinder64(data)
     if is_asr:
-        logger.info('Getting get_asr_patch()')
-        if asr.get_asr_patch(pf) == -1:
-            logger.warning('Failed getting get_asr_patch()')
+        logger.info('Getting get_asr_sigcheck_patch()')
+        if asr.get_asr_sigcheck_patch(pf) == -1:
+            logger.warning('Failed getting get_asr_sigcheck_patch()')
     elif is_rext:
         logger.info('Getting get_skip_sealing_patch()')
         if rext.get_skip_sealing_patch(pf) == -1:
