@@ -1,6 +1,5 @@
 import click
-from pyipatcher.patchfinder.patchfinder64 import patchfinder64
-import pyipatcher.patchfinder.kernelpatchfinder as kpf
+from pyipatcher.patchfinder.kernelpatchfinder import kernelpatchfinder
 from pyipatcher.logger import get_my_logger
 
 @click.command()
@@ -46,32 +45,28 @@ from pyipatcher.logger import get_my_logger
 
 def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu_img4_sigpatch, verbose):
     logger = get_my_logger(verbose)
-    kpf.verbose = verbose
     kernel = input.read()
     if kernel[:4] == b'\xca\xfe\xba\xbe':
         logger.info('Detected fat macho kernel')
         kernel = kernel[28:]
-    pf = patchfinder64(kernel)
-    xnu = pf.get_str(b"root:xnu-", 4, end=True)
-    kernel_vers = int(xnu)
-    kpf.kernel_vers = kernel_vers
-    logger.info(f'Kernel-{kernel_vers} inputted')
+    kpf = kernelpatchfinder(kernel, verbose)
+    logger.info(f'Kernel-{kpf.kernel_vers} inputted')
     if patch_amfi:
         logger.info('Getting get_amfi_patch()')
-        if kpf.get_amfi_patch(pf) == -1:
+        if kpf.get_amfi_patch() == -1:
             logger.warning('Failed getting get_amfi_patch()')
             return -1
     if rootvol_seal:
         logger.info('Getting get_root_volume_seal_is_broken_patch()')
-        if kpf.get_root_volume_seal_is_broken_patch(pf) == -1:
+        if kpf.get_root_volume_seal_is_broken_patch() == -1:
             logger.warning('Failed getting get_root_volume_seal_is_broken_patch()')
     if update_rootfs_rw:
         logger.info('Getting get_update_rootfs_rw_patch()')
-        if kpf.get_update_rootfs_rw_patch(pf) == -1:
+        if kpf.get_update_rootfs_rw_patch() == -1:
             logger.warning('Failed getting get_update_roofs_rw_patch()')
     if afu_img4_sigpatch:
         logger.info('Getting get_AFU_img4_sigcheck_patch()')
-        if kpf.get_AFU_img4_sigcheck_patch(pf) == -1:
+        if kpf.get_AFU_img4_sigcheck_patch() == -1:
             logger.warning('Failed getting get_AFU_img4_sigcheck_patch()')
     logger.info(f'Writing out patched file to {output.name}')
-    output.write(pf._buf)
+    output.write(kpf._buf)

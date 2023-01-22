@@ -1,51 +1,81 @@
-from .patchfinder64 import patchfinder64, retassure, assure
+from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 import struct
 from pyipatcher.logger import get_my_logger
 
-class ibootpatchfinder:
-    def __init__(self, pf):
+verbose = 0
+
+class ibootpatchfinder(patchfinder64):
+    def __init__(self, buf):
         raise NotImplementedError()
-        self.pf = pf
+        super().__init__(buf)
         self.vers = self.get_iboot_major_ver()
         print(f'iBoot-{self.vers} inputted')
         self.base = self.get_base()
         print(f'Base address: {hex(self.base)}')
+
+    @property
+    def has_kernel_load(self):
+        return self.memmem(b'__PAGEZERO') != -1
+    
+    @property
+    def has_recovery_console(self):
+        return self.memmem(b'Entering recovery mode, starting command prompt') != 1
     
     def get_iboot_major_ver(self):
-        return int(self.pf.get_str(b'iBoot-', 4, end=True))
+        return int(self.get_str(b'iBoot-', 4, end=True))
     
     def get_base(self):
-        offset = 0x300 if self.iboot_vers >= 6603 else 0x318
-        return struct.unpack("<Q", self.pf._buf[offset:offset+8])[0]
-    
-    def get_iboot_adr(x):   return x + self.base
-    def iboot_ref(self, pat):   self.pf.xref(0, self.pf.size, pat)
+        offset = 0x300 if self.vers >= 6603 else 0x318
+        return struct.unpack("<Q", self._buf[offset:offset+8])[0]
         
     def get_debug_enabled_patch(self):
-        logger = get_my_logger('get_debug_enabled_patch')
-        debug_loc = self.pf.memmem("debug-enabled")
-        assure(debug_loc != -1)
+        logger = get_my_logger(verbose)
+        debug_loc = self.memmem(b'debug-enabled')
+        assert debug_loc != -1
         logger.debug(f'Found \"debug-enabled\" str loc at {hex(debug_loc)}')
-        debug_enabled_ref = self.pf.xref(0, self.pf.size, debug_loc)
-        assure(debug_enabled_ref != 0)
-        print(f'Found \"debug-enabled\" str ref at {hex(debug_enabled_ref)}')
-        pf.apply_patch(debug_enabled_ref, b'\x20\x00\x80\xD2') 
+        debug_enabled_ref = self.xref(debug_loc)
+        assert debug_enabled_ref != 0
+        logger.debug(f'Found \"debug-enabled\" str ref at {hex(debug_enabled_ref)}')
+        self.apply_patch(debug_enabled_ref, b'\x20\x00\x80\xD2') 
        
-    def get_sigcheck_patch(self):
-        logger = get_my_logger('get_sigcheck_patch')
-        img4decodemanifestexists = 0
-        if self.vers >= 5540:
-            logger.debug(f'iOS 13.4 or later iBoot detected')
-            img4decodemanifestexists = self.pf.memmem(b'\xE8\x03\x00\xAA\xC0\x00\x80\x52\xE8\x00\x00\xB4')
-        elif 3406 <= self.vers < 5540:
-            logger.debug('iOS 13.3 or lower iBoot detected')
-            img4decodemanifestexists = pf.memmem(b'\xE8\x03\x00\xAA\xE0\x07\x1F\x32\xE8\x00\x00\xB4')
-        else:
-            logger.error('iOS version not supported yet')
-            return
-        logger.debug(f'Found img4decodemanifestexists at {hex(img4decodemanifestexists)}')
+    def get_cmd_hanlder_patch(self, command, ptr):
+        logger = get_my_logger(verbose)
+        cmd = bytes('\0' + command, 'utf-8')
+        cmd_loc = self.memmem(cmd)
+        if cmd_loc == -1:
+            logger.error(f'Could not find command \"{command}\"')
+            return -1
+        cmd_ref = cmd_loc + self.base
+        logger.debug(f'Found \"{command}\" at {hex(cmd_loc)} looking for {hex(cmd_ref)}')
+        self.apply_patch(cmd_ref+8, ptr.to_bytes(8, byteorder='little'))
         
-       
+    def get_unlock_nvram_patch(self):
+        logger = get_my_logger(verbose)
+        debuguart_loc = self.memmem(b'debug-uarts')
+        if debuguart_loc == -1:
+            logger.error('Could not find debug-uarts string')
+            return -1
+        logger.debug(f'debuguart_loc={hex(debuguart_loc)}')
+        debuguart_ref = debuguart_loc + self.base
+        logger.debug(f'debuguart_ref={hex(debuguart_ref)}')
+        setenv_whitelist = debuguart_ref
+        while struct.unpack("<Q", self._buf[setenv_whitelist:setenv_whitelist+8])[0]:
+            setenv_whitelist -= 8
+        setenv_whitelist += 8
+        logger.debug(f'setenv_whitelist={hex(setenv_whitelist)}')
+        blacklistfunc = self.xref(setenv_whitelist)
+        if blacklistfunc == 0:
+            logger.error('Could not find setenv whitelist ref')
+            return -1
+        logger.debug(f'blacklistfunc={hex(blacklistfunc)}')
+        blacklistfunc_begin = self.bof(0, blacklistfunc)
+        if blacklistfunc_begin == 0:
+            logger.error('Could not find blacklistfunc beginning')
+            return -1
+        logger.debug(f'blacklistfunc_begin={hex(blacklistfunc_begin)}')
+
+    def get_sigcheck_patch(self):
+        pass
             
             
         

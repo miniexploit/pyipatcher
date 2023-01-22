@@ -6,6 +6,11 @@ Incomplete iOS bootchain patchers in Python
 * patchfinder64 is ported from [xerub's patchfinder](https://github.com/xerub/patchfinder64)
 * kernelpatcher is ported from [palera1n team's fork of Kernel64Patcher](https://github.com/palera1n/Kernel64Patcher)
 ## Installation
+* Install from PyPI (bug-free):
+```
+python3 -m pip install pyipatcher
+```
+* Install locally (receive updates more often):
 ```
 git clone https://github.com/Mini-Exploit/pyipatcher
 cd pyipatcher

@@ -1,6 +1,6 @@
 import click
-import pyipatcher.patchfinder.asrpatchfinder as asr
-import pyipatcher.patchfinder.rextpatchfinder as rext
+from pyipatcher.patchfinder.asrpatchfinder import asrpatchfinder
+from pyipatcher.patchfinder.rextpatchfinder import rextpatchfinder
 from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 from pyipatcher.logger import get_my_logger
 
@@ -31,19 +31,23 @@ from pyipatcher.logger import get_my_logger
 
 def ramdiskpatcher(input, output, is_asr, is_rext, verbose):
     logger = get_my_logger(verbose)
-    asr.verbose = verbose
-    rext.verbose = verbose
     data = input.read()
-    pf = patchfinder64(data)
+    apf = None
+    rpf = None
     if is_asr:
+        apf = asrpatchfinder(data, verbose)
         logger.info('Getting get_asr_sigcheck_patch()')
-        if asr.get_asr_sigcheck_patch(pf) == -1:
+        if apf.get_asr_sigcheck_patch() == -1:
             logger.warning('Failed getting get_asr_sigcheck_patch()')
     elif is_rext:
+        rpf = rextpatchfinder(data, verbose)
         logger.info('Getting get_skip_sealing_patch()')
-        if rext.get_skip_sealing_patch(pf) == -1:
+        if rpf.get_skip_sealing_patch() == -1:
             logger.warning('Failed getting get_skip_sealing_patch()')
     logger.info(f'Writing out patched file to {output.name}')
-    output.write(pf._buf)
+    if apf:
+        output.write(apf._buf)
+    else:
+        output.write(rpf._buf)
     return 0
     
