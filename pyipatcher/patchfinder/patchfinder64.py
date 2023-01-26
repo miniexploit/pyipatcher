@@ -52,7 +52,8 @@ class patchfinder64:
             start -= 4
         return 0
 
-    def bof(self, start, where):
+    def bof(self, where):
+        start = 0
         while where >= start:
             op = struct.unpack("<I", self._buf[where:where+4])[0]
             if (op & 0xFFC003FF) == 0x910003FD:
