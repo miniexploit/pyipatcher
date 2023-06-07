@@ -19,18 +19,20 @@ cd pyipatcher
 ## Usage
 ```
 $ pyipatcher
-pyipatcher version: 1.0.2
+pyipatcher version: 1.1.0
 Usage: pyipatcher [OPTIONS] COMMAND [ARGS]...
 
 Options:
   -h, --help  Show this message and exit.
 
 Commands:
+  ibootpatcher
   kernelpatcher
   ramdiskpatcher
+
 ```
 ## Future plan
-* Complete kernel patcher
-* Add iBoot patcher, ASR patcher, restored_external patcher
+* Complete kernel patcher ✅ 
+* Add iBoot patcher, ASR patcher, restored_external patcher  ✅ 
 ## Credits
 Thanks to [plx](https://github.com/justtryingthingsout) for helping me with many fixes

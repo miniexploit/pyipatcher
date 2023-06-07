@@ -1,7 +1,6 @@
 import click
 from pyipatcher.patchfinder.asrpatchfinder import asrpatchfinder
 from pyipatcher.patchfinder.rextpatchfinder import rextpatchfinder
-from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 from pyipatcher.logger import get_my_logger
 
 @click.command()

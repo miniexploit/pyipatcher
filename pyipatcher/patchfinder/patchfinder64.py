@@ -1,11 +1,11 @@
 import struct
 import ctypes
 import sys
+import binascii
 
 def BIT_RANGE(v, begin, end):   return (v >> begin) % (1 << (end - begin + 1))
 def BIT_AT(v, pos): return (v >> pos) % 2
 def SET_BITS(v, begin): return v << begin
-
 
 def arm64_branch_instruction(_from, to):
     _from = ctypes.c_ulonglong(_from).value
@@ -19,21 +19,26 @@ class patchfinder64:
         if self.size % 4 != 0:
             raise Exception('arm64 file size not divisible by 4')
 
-    def memmem(self, needle, end=False):
+    def memmem(self, needle, start_loc=0, end=False):
         if end:
-            return self._buf.find(needle)+len(needle)
+            return self._buf.find(needle, start_loc, self.size)+len(needle)
         else:
-            return self._buf.find(needle)
+            return self._buf.find(needle, start_loc, self.size)
 
     def get_str(self, start, size, end=False):
-        where = self.memmem(start, end)
+        where = self.memmem(start, end=end)
         return self._buf[where:where+size]
 
     def get_insn(self, where):
         if self.size - where < 4:
             raise Exception('offset reached end of file')
         return struct.unpack("<I", self._buf[where:where+4])[0]
-        
+
+    def get_ptr_loc(self, where):
+        if self.size - where < 8:
+            raise Exception('offset reached end of file')
+        return struct.unpack("<Q", self._buf[where:where+8])[0]
+
     def step(self, start, length, what, mask):
         end = start + length
         while start < end:
@@ -43,13 +48,19 @@ class patchfinder64:
             start += 4
         return 0
      
-    def step_back(self, start, length, what, mask):
+    def step_back(self, start, length, what, mask, reversed=False):
         end = start - length
         while start >= end:
             x = struct.unpack("<I", self._buf[start:start+4])[0]
-            if (x & mask) == what:
-                return start
-            start -= 4
+            if not reversed:
+                if (x & mask) == what:
+                    return start
+                start -= 4
+            else:
+                if (x & mask) == what:
+                    start -= 4
+                else:
+                    return start
         return 0
 
     def bof(self, where):
@@ -116,12 +127,22 @@ class patchfinder64:
                 return i
         return 0
 
+    def xrefcode(self, what, start=0, end=0):
+        end = self.size & ~3 if not end else end & ~3
+        for i in range(0, end, 4):
+            op = struct.unpack("<I", self._buf[i:i+4])[0]
+            if op & 0x7C000000 == 0x14000000:
+                where = self.follow_call(i)
+                if where == what:
+                    return i
+        return 0
+
     def apply_patch(self, where, patch):
         self._buf[where:where+len(patch)] = patch
 
 
 def test():
-    set_package_name("test")
+    #set_package_name("test")
     kernel = open("kcache.raw", "rb").read()
     pf = patchfinder64(kernel)
     ret = pf.step(16223228, 100, 0x94000000, 0xFC000000)

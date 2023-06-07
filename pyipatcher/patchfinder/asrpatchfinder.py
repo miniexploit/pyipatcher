@@ -1,5 +1,4 @@
 from .patchfinder64 import patchfinder64, arm64_branch_instruction
-import ctypes
 from pyipatcher.logger import get_my_logger
 
 verbose = 0

@@ -39,7 +39,7 @@ class rextpatchfinder(patchfinder64):
          # iOS 15
         if skip_sealing_ref_ref == 0:
             skip_sealing_ref -= 4
-            skip_sealing_ref_ref = self.cbz_ref_back(kip_sealing_ref, skip_sealing_ref)
+            skip_sealing_ref_ref = self.cbz_ref_back(skip_sealing_ref, skip_sealing_ref)
         if skip_sealing_ref_ref == 0:
             logger.error('Could not find skip_sealing_ref ref')
             return -1

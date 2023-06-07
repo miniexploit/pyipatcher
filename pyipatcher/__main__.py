@@ -1,8 +1,7 @@
 import click
 from .cli.ramdiskpatcher import ramdiskpatcher
 from .cli.kernelpatcher import kernelpatcher
-import logging, coloredlogs
-from .logger import get_my_logger
+from .cli.ibootpatcher import ibootpatcher
 
 @click.group()
 def cli():
@@ -10,5 +9,7 @@ def cli():
    
 cli.add_command(ramdiskpatcher)
 cli.add_command(kernelpatcher)
+cli.add_command(ibootpatcher)
+
 
 cli.context_settings = dict(help_option_names=['-h', '--help'])

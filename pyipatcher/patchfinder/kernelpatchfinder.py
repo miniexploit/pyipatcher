@@ -95,28 +95,6 @@ class kernelpatchfinder(patchfinder64):
         self.apply_patch(tbnz_ref2, b'\x1f \x03\xd5')
         return 0
 
-    def get_update_rootfs_rw_patch(self):
-        logger = get_my_logger(self.verbose)
-        update_rootfs_rw_string = b"%s:%d: %s Updating mount to read/write mode is not allowed"
-        update_rootfs_rw_loc = self.memmem(update_rootfs_rw_string)
-        if update_rootfs_rw_loc == -1: 
-            logger.error('Could not find update_rootfs_rw_string')
-            return -1
-        logger.debug(f'Found update_rootfs_rw_string loc at {hex(update_rootfs_rw_loc)}')
-        update_rootfs_rw_ref = self.xref(update_rootfs_rw_loc)
-        logger.debug(f'Found update_rootfs_rw_string ref at {hex(update_rootfs_rw_ref)}')
-        tbnz_ref = self.step_back(update_rootfs_rw_ref, 800, 0x36000000, 0x7E000000)
-        if tbnz_ref == 0:
-            logger.error('Could not find tbnz ref')
-            return -1
-        tbnz_ref2 = self.step_back(tbnz_ref - 4, 800, 0x36000000, 0x7E000000)
-        if tbnz_ref2 == 0:
-            logger.error('Could not find tbnz ref')
-            return -1
-        logger.debug(f'Patching tbnz at {hex(tbnz_ref2)}')
-        self.apply_patch(tbnz_ref2, b'\x1f \x03\xd5')
-        return 0
-
     def get_AFU_img4_sigcheck_patch(self):
         logger = get_my_logger(self.verbose)
         ent_loc = self.memmem(b'%s::%s() Performing img4 validation outside of workloop')

@@ -23,8 +23,8 @@ class MyFormatter(logging.Formatter): # https://stackoverflow.com/questions/3840
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-def get_my_logger(verbose):
-    logger = logging.getLogger(inspect.stack()[1][3])
+def get_my_logger(verbose, name=None):
+    logger = logging.getLogger(inspect.stack()[1][3] if not name else name)
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     if verbose:
