@@ -2,8 +2,6 @@
 # https://github.com/dayt0n/kairos
 # https://github.com/Cryptiiiic/liboffsetfinder64
 
-#from pyipatcher.patchfinder.patchfinder64 import patchfinder64
-#from pyipatcher.patchfinder import insn
 from pyipatcher.patchfinder.patchfinder64 import patchfinder64
 from pyipatcher.patchfinder import insn
 import struct, ctypes
@@ -179,7 +177,7 @@ class ibootpatchfinder(patchfinder64):
                 return -1
             logger.debug(f'bastackvarbranch={hex(bastackvarbranch)}')
             bloff = self.step(bastackvarbranch, self.size - bastackvarbranch, 0x94000000, 0xFF000000)
-            nopoff = self.stepback(bloff, bloff, 0xd503201f, 0xFFFFFFFF)
+            nopoff = self.step_back(bloff, bloff, 0xd503201f, 0xFFFFFFFF)
             default_ba_xref = bastackvar = nopoff
             if default_ba_xref == 0:
                 logger.error('Could not find default_ba_xref')
