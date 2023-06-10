@@ -48,7 +48,9 @@ class rextpatchfinder(patchfinder64):
         self.apply_patch(skip_sealing_ref_ref, our_branch.to_bytes(4, byteorder='little'))
         return 0
     
-        
+    @property
+    def output(self):
+        return bytes(self._buf)
     
     
     

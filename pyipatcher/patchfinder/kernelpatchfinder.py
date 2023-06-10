@@ -111,6 +111,8 @@ class kernelpatchfinder(patchfinder64):
         self.apply_patch(ent_ref + 12, b'\x00\x00\x80\xd2')
         return 0
 
-
+    @property
+    def output(self):
+        return bytes(self._buf)
 
 

@@ -31,3 +31,6 @@ class asrpatchfinder(patchfinder64):
         our_branch = arm64_branch_instruction(ref_failed, ref_passed)
         self.apply_patch(ref_failed, our_branch.to_bytes(4, byteorder='little'))
         return 0
+    @property
+    def output(self):
+        return bytes(self._buf)

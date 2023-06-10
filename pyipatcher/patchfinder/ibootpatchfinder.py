@@ -179,7 +179,7 @@ class ibootpatchfinder(patchfinder64):
                 return -1
             logger.debug(f'bastackvarbranch={hex(bastackvarbranch)}')
             bloff = self.step(bastackvarbranch, self.size - bastackvarbranch, 0x94000000, 0xFF000000)
-            nopoff = self.stepback(bloff, bloff, 0xd503201f, 0xFFFFFFFF)
+            nopoff = self.step_back(bloff, bloff, 0xd503201f, 0xFFFFFFFF)
             default_ba_xref = bastackvar = nopoff
             if default_ba_xref == 0:
                 logger.error('Could not find default_ba_xref')
@@ -288,6 +288,7 @@ class ibootpatchfinder(patchfinder64):
         logger.debug(f'({hex(adroff + self.base)})patching: "adr x{adrrd}, {hex(default_ba_str_loc + self.base)}"')
         self.apply_patch(adroff, opcode3.to_bytes(4, byteorder='little'))
         return 0
+
     def get_change_reboot_to_fsboot_patch(self):
         logger = get_my_logger(self.verbose)
         rebootstr = self.memmem(b'reboot\x00')
@@ -401,6 +402,7 @@ class ibootpatchfinder(patchfinder64):
                         logger.debug(f'img4interposercallback_mov_x20={hex(img4interposercallback_mov_x20 + self.base)}')
                         self.apply_patch(img4interposercallback_mov_x20, b'\x00\x00\x80\xD2')
         return 0
+
     def get_freshnonce_patch(self):
         logger = get_my_logger(self.verbose)
         # check stage first
@@ -445,3 +447,7 @@ class ibootpatchfinder(patchfinder64):
         logger.debug(f'branch_loc={hex(branch_loc + self.base)}')
         self.apply_patch(branch_loc, b'\x1F\x20\x03\xD5')
         return 0
+
+    @property
+    def output(self):
+        return bytes(self._buf)

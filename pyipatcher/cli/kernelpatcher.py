@@ -69,4 +69,4 @@ def kernelpatcher(input, output, patch_amfi, rootvol_seal, update_rootfs_rw, afu
         if kpf.get_AFU_img4_sigcheck_patch() == -1:
             logger.warning('Failed getting get_AFU_img4_sigcheck_patch()')
     logger.info(f'Writing out patched file to {output.name}')
-    output.write(kpf._buf)
+    output.write(kpf.output)

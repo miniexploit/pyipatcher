@@ -72,6 +72,6 @@ def ibootpatcher(input, output, unlock_nvram, cmd_handler, reboot_to_fsboot, boo
     if ibpf.get_sigcheck_patch() == -1:
         logger.warning('Failed getting get_sigcheck_patch()')
     logger.info(f'Writing out patched file to {output.name}')
-    output.write(ibpf._buf)
+    output.write(ibpf.output)
     return 0
 

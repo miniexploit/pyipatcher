@@ -19,7 +19,7 @@ cd pyipatcher
 ## Usage
 ```
 $ pyipatcher
-pyipatcher version: 1.1.0
+pyipatcher version: 1.1.1
 Usage: pyipatcher [OPTIONS] COMMAND [ARGS]...
 
 Options:

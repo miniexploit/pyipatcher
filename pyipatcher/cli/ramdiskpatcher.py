@@ -45,8 +45,8 @@ def ramdiskpatcher(input, output, is_asr, is_rext, verbose):
             logger.warning('Failed getting get_skip_sealing_patch()')
     logger.info(f'Writing out patched file to {output.name}')
     if apf:
-        output.write(apf._buf)
+        output.write(apf.output)
     else:
-        output.write(rpf._buf)
+        output.write(rpf.output)
     return 0
     
