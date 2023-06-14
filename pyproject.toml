@@ -11,6 +11,7 @@ repository = "https://github.com/Mini-Exploit/pyipatcher"
 python = "^3.7"
 click = "^8.1.3"
 pyquery = "^2.0.0"
+pyimg4 = "^0.7"
 
 [tool.poetry.scripts]
 pyipatcher = "pyipatcher.__main__:cli"
