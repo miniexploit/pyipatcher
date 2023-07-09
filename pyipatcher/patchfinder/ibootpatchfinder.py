@@ -409,11 +409,11 @@ class ibootpatchfinder(patchfinder64):
         if self.stage1:
             logger.debug('iBootStage1/iBSS detected, not patching nvram')
             return 0
+        logger.debug('Not iBootStage1/iBSS, continuing')
         noncevar_str = self.memmem(b'com.apple.System.boot-nonce\0')
         if noncevar_str == -1:
             logger.error('Could not find "com.apple.System.boot-nonce"')
             return -1
-        logger.debug('Not iBootStage1/iBSS, continuing')
         logger.debug(f'noncevar_str={hex(noncevar_str + self.base)}')
         noncevar_ref = self.xref(noncevar_str)
         if noncevar_ref == 0:

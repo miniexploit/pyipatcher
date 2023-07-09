@@ -10,8 +10,26 @@ class IPatcher:
 		self.verbose = verbose
 		self.logger = get_my_logger(self.verbose, name='IPatcher')
 
-	def pack_into_img4(self, buf):
-		pass
+	def pack_into_img4(self, im4p, im4m, fourcc=None):
+		if not isinstance(im4p, pyimg4.IM4P):
+			try:
+				im4p = pyimg4.IM4P(payload=im4p, fourcc=fourcc)
+			except Exception as e:
+				self.logger.error(f'Could not init IM4P handler: {e}')
+				return -1
+		if not isinstance(im4m, pyimg4.IM4M):
+			try:
+				im4m = pyimg4.IM4M(im4m)
+			except Exception as e:
+				self.logger.error(f'Could not init IM4M handler: {e}')
+				return -1
+		try:
+			img4 = pyimg4.IMG4(im4p=im4p, im4m=im4m)
+		except Exception as e:
+			self.logger.error(f'Could not create IMG4: {e}')
+			return -1
+		return img4.output()
+
 	def get_keys(self, identifier, buildid, type):
 		try:
 			f = json.loads(wikiproxy.getkeys(identifier, buildid))
