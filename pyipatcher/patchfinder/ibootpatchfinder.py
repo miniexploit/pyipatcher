@@ -22,12 +22,23 @@ class ibootpatchfinder(patchfinder64):
         logger = get_my_logger(self.verbose, name='ibootpatchfinder')
         self.vers, self.minor_vers = self.get_iboot_ver()
         logger.debug(f'iBoot-{self.vers} inputted')
+        if self.vers >= 6671:
+            if 8419 <= self.vers <= 9000:
+                logger.info('iOS 16 iBoot detected!')
+            elif 7429 <= self.vers < 8419:
+                logger.info('iOS 15 iBoot detected!')
+            elif self.vers < 7429:
+                logger.info('iOS 14 iBoot detected!')
         if self.vers < 3406:
             raise NotImplementedError(f'Unsupported iBoot (iBoot-{self.vers}.{self.minor_vers}), only iOS 10 or later iBoot is supported')
-        self.stage1 = (self._buf[0x200:0x200+5] == 'iBSS')
-        self.stage2 =(self._buf[0x200:0x200+5] == 'iBEC')
-        self.cpid = self.get_cpid()
-        logger.debug(f'iBoot ChipID: {self.cpid}')
+        self.stage1 = (self._buf[0x200:0x200+5] == b'iBSS' or self._buf[0x200:0x200+11] == b'iBootStage1')
+        logger.debug(f'stage1={self.stage1}')
+        self.stage2 = (self._buf[0x200:0x200+5] == b'iBEC' or self._buf[0x200:0x200+11] == b'iBootStage2')
+        logger.debug(f'stage2={self.stage2}')
+        self.cpid = 0
+        if not self.stage1:
+            self.cpid = self.get_cpid()
+            logger.debug(f'iBoot ChipID: {self.cpid}')
         self.base = self.get_base()
         logger.debug(f'Base address: {hex(self.base)}')
 
@@ -392,7 +403,7 @@ class ibootpatchfinder(patchfinder64):
             else:
                 self.apply_patch(img4interposercallback_ret - 4, b'\x00\x00\x80\xD2')
                 boff = self.step_back(real_img4interposercallback, real_img4interposercallback, 0x14000000, 0xFC000000)
-                if self.step_back(boff, boff, 0xa94000f0, 0xfff000f0) == 0:
+                if self.step_back(boff, 4, 0xa94000f0, 0xfff000f0) == 0:
                     boff = self.step_back(real_img4interposercallback, real_img4interposercallback, 0x14000000, 0xFC000000)                
                     if self.step_back(boff, boff, 0xa94000f0, 0xfff000f0) == 0:
                         logger.error('img4interposercallback couldn\'t find branch for ret2')

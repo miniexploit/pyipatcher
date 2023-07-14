@@ -7,6 +7,9 @@ def BIT_RANGE(v, begin, end):   return (v >> begin) % (1 << (end - begin + 1))
 def BIT_AT(v, pos): return (v >> pos) % 2
 def SET_BITS(v, begin): return v << begin
 
+def log(msg):
+    print(f'patchfinder64: [DEBUG] {msg}')
+
 def arm64_branch_instruction(_from, to):
     _from = ctypes.c_ulonglong(_from).value
     to = ctypes.c_ulonglong(to).value
@@ -138,6 +141,7 @@ class patchfinder64:
         return 0
 
     def apply_patch(self, where, patch):
+        log(f'Applying patch at {hex(where)}: {binascii.hexlify(patch)}')
         self._buf[where:where+len(patch)] = patch
 
 
