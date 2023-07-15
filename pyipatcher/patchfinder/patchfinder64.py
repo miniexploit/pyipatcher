@@ -51,9 +51,13 @@ class patchfinder64:
             start += 4
         return 0
      
-    def step_back(self, start, length, what, mask, reversed=False):
+    def step_back(self, start, length, what, mask, reversed=False, dbg=False):
         end = start - length
         while start >= end:
+            if dbg:
+                print(hex(start))
+                if start == 0xdba8:
+                    print('what the hell')
             x = struct.unpack("<I", self._buf[start:start+4])[0]
             if not reversed:
                 if (x & mask) == what:

@@ -402,14 +402,14 @@ class ibootpatchfinder(patchfinder64):
                 self.apply_patch(img4interposercallback_ret2 - 4, b'\x00\x00\x80\xD2')
             else:
                 self.apply_patch(img4interposercallback_ret - 4, b'\x00\x00\x80\xD2')
-                boff = self.step_back(real_img4interposercallback, real_img4interposercallback, 0x14000000, 0xFC000000)
+                boff = self.step_back(img4interposercallback_ret, img4interposercallback_ret, 0x14000000, 0xFC000000)
                 if self.step_back(boff, 4, 0xa94000f0, 0xfff000f0) == 0:
-                    boff = self.step_back(real_img4interposercallback, real_img4interposercallback, 0x14000000, 0xFC000000)                
-                    if self.step_back(boff, boff, 0xa94000f0, 0xfff000f0) == 0:
+                    boff = self.step_back(boff-4, boff-4, 0x14000000, 0xFC000000)
+                    if self.step_back(boff, 4, 0xa94000f0, 0xfff000f0) == 0:
                         logger.error('img4interposercallback couldn\'t find branch for ret2')
                         return -1
                     else:
-                        img4interposercallback_mov_x20 = self.step_back(boff, boff, 0xd2000000, 0xff000000)
+                        img4interposercallback_mov_x20 = self.step_back(boff, boff, 0xaa0003e0, 0xffe0ffe0, dbg=0)
                         logger.debug(f'img4interposercallback_mov_x20={hex(img4interposercallback_mov_x20 + self.base)}')
                         self.apply_patch(img4interposercallback_mov_x20, b'\x00\x00\x80\xD2')
         return 0
