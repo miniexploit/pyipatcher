@@ -101,6 +101,11 @@ class ibootpatchfinder(patchfinder64):
         
     def get_unlock_nvram_patch(self):
         logger = get_my_logger(self.verbose)
+        # check stage first
+        if self.stage1:
+            logger.debug('iBootStage1/iBSS detected, not patching nvram')
+            return 0
+        logger.debug('Not iBootStage1/iBSS, continuing')
         debuguart_loc = self.memmem(b'debug-uarts')
         if debuguart_loc == -1:
             logger.error('Could not find debug-uarts string')
@@ -109,12 +114,17 @@ class ibootpatchfinder(patchfinder64):
         debuguart_ref = self.iboot_memmem(debuguart_loc)
         logger.debug(f'debuguart_ref={hex(debuguart_ref + self.base)}')
         setenv_whitelist = debuguart_ref
-        try:
-            while self.get_ptr_loc(setenv_whitelist):
-                setenv_whitelist -= 8
-        except:
-            pass
-        setenv_whitelist += 8
+        if self.cpid in (7001, 8000, 8003):
+            logger.debug('a8x/a9')
+            setenv_whitelist -= 16
+        else:
+            logger.debug('not a8x/a9')
+            try:
+                while self.get_ptr_loc(setenv_whitelist):
+                    setenv_whitelist -= 8
+            except:
+                pass
+            setenv_whitelist += 8
         logger.debug(f'setenv_whitelist={hex(setenv_whitelist + self.base)}')
         blacklistfunc = self.xref(setenv_whitelist)
         if blacklistfunc == 0:
@@ -144,7 +154,7 @@ class ibootpatchfinder(patchfinder64):
         if blacklistfunc_begin == 0:
             logger.error('Could not find beginning of blacklistfunc2')
             return -1
-        logger.debug(f'blacklistfunc2_begin={hex(blacklistfunc_begin + self.base)}')
+        logger.debug(f'blacklistfunc2_begin={hex(blacklistfunc2_begin + self.base)}')
         self.apply_patch(blacklistfunc2_begin, b'\x00\x00\x80\xd2\xc0\x03_\xd6')
         com_apple_system_loc = self.memmem(b'com.apple.System.\0')
         if com_apple_system_loc == -1:
@@ -152,7 +162,7 @@ class ibootpatchfinder(patchfinder64):
             return -1
         logger.debug(f'com_apple_system_loc={hex(com_apple_system_loc + self.base)}')
         com_apple_system_ref = self.xref(com_apple_system_loc)
-        logger.debug(f'com_apple_system_ref={hex(com_apple_system_ref)}')
+        logger.debug(f'com_apple_system_ref={hex(com_apple_system_ref + self.base)}')
         com_apple_system_begin = self.bof(com_apple_system_ref)
         if com_apple_system_begin == 0:
             logger.error('Could not find com_apple_system_begin')
@@ -450,7 +460,7 @@ class ibootpatchfinder(patchfinder64):
         if noncefun2_blref == 0:
             logger.error('Could not find noncefun2_blref')
             return -1
-        logger.debug(f'noncefun2_blref={noncefun2_blref + self.base}')
+        logger.debug(f'noncefun2_blref={hex(noncefun2_blref + self.base)}')
         noncefun2_blref -= 4
         while insn.supertype(insn.get_type(self.get_insn(noncefun2_blref))) != 'sut_branch_imm':
             noncefun2_blref -= 4

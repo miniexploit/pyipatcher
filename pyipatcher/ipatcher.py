@@ -163,14 +163,14 @@ class IPatcher:
             return -1
 
 
-    def ramdisk_handler(self, action, buf=None, asr=None, rext=None, kbag=None, mountpoint=None):
+    def ramdisk_handler(self, action, buf=None, asr=None, rext=None, kbag=None, mountpoint=None, mntrdsk=None):
         if action == 'decrypt':
             self.logger.info('Decrypting ramdisk')
             dec = self.decrypt_file(buf, kbag)
             if dec == -1:
                 return -1
             # write extracted ramdisk
-            ramdisk = 'ramdisk.dmg'
+            ramdisk = mntrdsk
             with open(ramdisk, 'wb') as f:
                 f.write(dec)
             if not os.path.exists(mountpoint):
@@ -183,36 +183,41 @@ class IPatcher:
             if subprocess.run(('hdiutil','attach', ramdisk, '-mountpoint', mountpoint), stdout=subprocess.DEVNULL).returncode != 0:
                 self.logger.error('Failed attaching ramdisk to mountpoint')
                 return -1
-            os.remove(ramdisk)
             return mountpoint
         elif action == 'patch': # handle buf as decrypted ramdisk, return patched asr, restored_external
             self.logger.info('Patching ramdisk components')
-            if asr is None or rext is None:
-                self.logger.error('Missing ASR and restored_external')
-                return -1
-            try:
-                apf = asrpatchfinder.asrpatchfinder(asr, self.verbose)
-            except Exception as e:
-                self.logger.error(f'Could not init ASR patcher: {e}')
-                return -1
-            try:
-                rpf = rextpatchfinder.rextpatchfinder(rext, self.verbose)
-            except Exception as e:
-                self.logger.error(f'Could not init restored_external patcher: {e}')
-                return -1
-            self.logger.debug('Patching ASR')
-            if apf.get_asr_sigcheck_patch() == -1:
-                self.logger.error('Failed patching ASR')
-                return -1
-            self.logger.debug('Patching restored_external')
-            if rpf.get_skip_sealing_patch() == -1:
-                self.logger.error('Failed patching restored_external skip_sealing')
-                return -1
-            return apf.output, rpf.output
+            if asr is not None:
+                try:
+                    apf = asrpatchfinder.asrpatchfinder(asr, self.verbose)
+                except Exception as e:
+                    self.logger.error(f'Could not init ASR patcher: {e}')
+                    return -1
+            if rext is not None:
+                try:
+                    rpf = rextpatchfinder.rextpatchfinder(rext, self.verbose)
+                except Exception as e:
+                    self.logger.error(f'Could not init restored_external patcher: {e}')
+                    return -1
+            if asr is not None:
+                self.logger.debug('Patching ASR')
+                if apf.get_asr_sigcheck_patch() == -1:
+                    self.logger.error('Failed patching ASR')
+                    return -1
+            if rext is not None:
+                self.logger.debug('Patching restored_external')
+                if rpf.get_skip_sealing_patch() == -1:
+                    self.logger.error('Failed patching restored_external skip_sealing')
+                    return -1
+            ret = []
+            if asr is not None:
+                ret.append(apf.output)
+            if rext is not None:
+                ret.append(rpf.output)
+            return ret
         else:
             self.logger.error(f'Unknown action for ramdisk handler: {action}')
 
     def patch_iboot(self, buf, bootargs, kbag=None):	return self.patch_file(buf, 'iBoot', bootargs=bootargs, kbag=kbag)
     def patch_kernel(self, buf, kbag=None):	return self.patch_file(buf, 'KernelCache', kbag=kbag)
-    def decrypt_ramdisk(self, buf, mountpoint, kbag=None):	return self.ramdisk_handler('decrypt', buf=buf, mountpoint=mountpoint, kbag=kbag)
+    def decrypt_ramdisk(self, buf, mountpoint, mntrdsk, kbag=None):	return self.ramdisk_handler('decrypt', buf=buf, mntrdsk=mntrdsk, mountpoint=mountpoint, kbag=kbag)
     def patch_ramdisk_comp(self, asr, rext):	return self.ramdisk_handler('patch', asr=asr, rext=rext)
