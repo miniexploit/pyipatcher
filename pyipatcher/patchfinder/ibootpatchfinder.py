@@ -35,12 +35,12 @@ class ibootpatchfinder(patchfinder64):
         logger.debug(f'stage1={self.stage1}')
         self.stage2 = (self._buf[0x200:0x200+5] == b'iBEC' or self._buf[0x200:0x200+11] == b'iBootStage2')
         logger.debug(f'stage2={self.stage2}')
+        self.base = self.get_base()
+        logger.debug(f'Base address: {hex(self.base)}')
         self.cpid = 0
         if not self.stage1:
             self.cpid = self.get_cpid()
             logger.debug(f'iBoot ChipID: {self.cpid}')
-        self.base = self.get_base()
-        logger.debug(f'Base address: {hex(self.base)}')
 
     @property
     def has_kernel_load(self):
@@ -55,8 +55,12 @@ class ibootpatchfinder(patchfinder64):
         return int(ver_arrs[0]), int(ver_arrs[1])
     
     def get_cpid(self):
-        cpid = self.get_str(b'platform-name\x00', 5, end=True)
-        return int(cpid[1:])
+        try:
+            cpid = self.get_str(b'platform-name\x00', 5, end=True)
+            return int(cpid[1:])
+        except:
+            cpid = self.get_str(b'platform-name\x00', 7, end=True)
+            return int(cpid[3:])
 
     def get_base(self):
         offset = 0x300 if self.vers >= 6603 else 0x318
