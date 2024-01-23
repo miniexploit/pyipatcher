@@ -16,10 +16,14 @@ def make_zeroes(n):
     return zeroes
 
 class ibootpatchfinder(patchfinder64):
-    def __init__(self, buf: bytes, verbose: bool):
+    def __init__(self, buf: bytes, verbose: bool, _logger=None):
         super().__init__(buf)
         self.verbose = verbose
-        logger = get_my_logger(self.verbose, name='ibootpatchfinder')
+        self.logger = _logger
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose, name='ibootpatchfinder')
         self.vers, self.minor_vers = self.get_iboot_ver()
         logger.debug(f'iBoot-{self.vers} inputted')
         if self.vers >= 6671:
@@ -71,7 +75,10 @@ class ibootpatchfinder(patchfinder64):
         return self.memmem(needle)
         
     def get_debug_enabled_patch(self):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         debug_enabled_loc = self.memmem(b'debug-enabled')
         if debug_enabled_loc == -1:
             logger.error('Could not find "debug-enabled"')
@@ -87,7 +94,10 @@ class ibootpatchfinder(patchfinder64):
         return 0 
        
     def get_cmd_handler_patch(self, command, ptr):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         cmd = bytes('\0' + command + '\0', 'utf-8')
         cmd_loc = self.memmem(cmd)
         if cmd_loc == -1:
@@ -104,7 +114,10 @@ class ibootpatchfinder(patchfinder64):
         return 0
         
     def get_unlock_nvram_patch(self):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         # check stage first
         if self.stage1:
             logger.debug('iBootStage1/iBSS detected, not patching nvram')
@@ -177,7 +190,10 @@ class ibootpatchfinder(patchfinder64):
 
     def get_bootarg_patch(self, bootargs):
         _bootargs = bytes(bootargs, 'utf-8')
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         default_ba_str_loc = self.memmem(b'rd=md0 nand-enable-reformat=1 -progress')
         if default_ba_str_loc == -1:
             logger.debug('Could not find default bootargs string loc, searching for alternative bootargs string')
@@ -315,7 +331,10 @@ class ibootpatchfinder(patchfinder64):
         return 0
 
     def get_change_reboot_to_fsboot_patch(self):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         rebootstr = self.memmem(b'reboot\x00')
         if rebootstr == -1:
             logger.error('Could not find rebootstr')
@@ -345,7 +364,10 @@ class ibootpatchfinder(patchfinder64):
         return 0
 
     def get_sigcheck_patch(self):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         img4decodemanifestexists = 0
         ios14 = False
         if ios14 := (self.vers >= 6671):
@@ -429,7 +451,10 @@ class ibootpatchfinder(patchfinder64):
         return 0
 
     def get_freshnonce_patch(self):
-        logger = get_my_logger(self.verbose)
+        if self.logger:
+            logger = self.logger
+        else:
+            logger = get_my_logger(self.verbose)
         # check stage first
         if self.stage1:
             logger.debug('iBootStage1/iBSS detected, not patching nvram')

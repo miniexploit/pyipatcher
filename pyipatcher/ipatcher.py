@@ -103,7 +103,7 @@ class IPatcher:
             if dec == -1:
                 return -1
             try:
-                ibpf = ibootpatchfinder.ibootpatchfinder(dec, self.verbose)
+                ibpf = ibootpatchfinder.ibootpatchfinder(dec, self.verbose, _logger=self.logger)
             except Exception as e:
                 self.logger.error(f'Could not init iBoot patcher: {e}')
                 return -1
