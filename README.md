@@ -30,8 +30,5 @@ Commands:
   ramdiskpatcher
 
 ```
-## Future plan
-* Complete kernel patcher ✅ 
-* Add iBoot patcher, ASR patcher, restored_external patcher  ✅ 
 ## Credits
 Thanks to [plx](https://github.com/justtryingthingsout) for helping me with many fixes
